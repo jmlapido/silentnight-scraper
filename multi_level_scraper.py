@@ -1,4 +1,17 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
+# Debug prints to verify environment variable loading
+print("DEBUG: OPENAI_API_BASE =", os.getenv("OPENAI_API_BASE"))
+
+# Explicitly set OpenAI environment variables to force them to be picked up
+# by any libraries that read directly from os.environ
+if os.getenv("OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+if os.getenv("OPENAI_API_BASE"):
+    os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
+
 import requests
 import time
 import re
@@ -16,15 +29,20 @@ from scrapegraphai.graphs import SmartScraperGraph
 #   OPENAI_API_BASE=https://openrouter.ai/api/v1
 #
 # The script will use the environment variable if set, otherwise fallback to the hardcoded value below.
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY") or "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"
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY") or "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"
 OPENROUTER_API_BASE = os.getenv("OPENAI_API_BASE") or "https://openrouter.ai/api/v1"
 
 llm_config = {
     "api_key": OPENROUTER_API_KEY,
     "base_url": OPENROUTER_API_BASE,
-    "model": "openai/gpt-4o-mini",
+    "model": "openai/gpt-3.5-turbo",  # Model changed to ensure compatibility with OpenRouter
     "temperature": 0,
 }
+
+# Force these settings into os.environ directly as well for any libraries
+# that might be picking them up from there
+os.environ["OPENAI_API_KEY"] = OPENROUTER_API_KEY
+os.environ["OPENAI_API_BASE"] = OPENROUTER_API_BASE
 
 # Global report data
 report_data = {
@@ -294,7 +312,7 @@ def process_product_page(product_url, product_index, base_output_dir, category_d
     name_graph = SmartScraperGraph(
         prompt="Extract only the product name/title as plain text.",
         source=product_url,
-        config={"llm": llm_config},
+        config={"llm": llm_config, "verbose": True},  # Added verbose for more debug info
     )
     name_result = name_graph.run()
     product_name = name_result.get('content', f"product_{product_index}")
@@ -309,7 +327,7 @@ def process_product_page(product_url, product_index, base_output_dir, category_d
     image_graph = SmartScraperGraph(
         prompt="Extract all product image URLs from this page. Return as a JSON array.",
         source=product_url,
-        config={"llm": llm_config},
+        config={"llm": llm_config, "verbose": True},  # Added verbose for more debug info
     )
     image_result = image_graph.run()
     image_urls = image_result.get('content', [])
@@ -409,7 +427,7 @@ def process_category_page(category_url, category_index, output_dir, processed_da
     category_graph = SmartScraperGraph(
         prompt="Extract all product URLs from this category/listing page. Return as a JSON array of strings.",
         source=category_url,
-        config={"llm": llm_config},
+        config={"llm": llm_config, "verbose": True},  # Added verbose for more debug info
     )
     product_urls_result = category_graph.run()
     

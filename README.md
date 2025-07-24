@@ -29,6 +29,12 @@ cd silentnight-scraper
 pip install -r requirements.txt
 ```
 
+> **Note:**
+> This project uses [python-dotenv](https://pypi.org/project/python-dotenv/) to automatically load environment variables from a `.env` file if present. If you use a `.env` file, it will be loaded automatically—no manual code changes needed. If you install dependencies via `requirements.txt`, `python-dotenv` will be installed. If not, you can install it manually with:
+> ```sh
+> pip install python-dotenv
+> ```
+
 3. **Configure your OpenRouter API key**
 
 You can provide your OpenRouter credentials in a `.env` file (recommended) or as environment variables.
