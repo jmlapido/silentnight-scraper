@@ -9,12 +9,19 @@ from io import BytesIO
 from PIL import Image
 from scrapegraphai.graphs import SmartScraperGraph
 
-# Replace with your actual OpenRouter API key
-OPENROUTER_API_KEY = "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"
+# OpenRouter API key and base URL setup
+# You can set these in your environment or .env file:
+#   OPENROUTER_API_KEY=your-openrouter-key
+#   OPENAI_API_KEY=your-openrouter-key
+#   OPENAI_API_BASE=https://openrouter.ai/api/v1
+#
+# The script will use the environment variable if set, otherwise fallback to the hardcoded value below.
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY") or "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"
+OPENROUTER_API_BASE = os.getenv("OPENAI_API_BASE") or "https://openrouter.ai/api/v1"
 
 llm_config = {
     "api_key": OPENROUTER_API_KEY,
-    "base_url": "https://openrouter.ai/api/v1",
+    "base_url": OPENROUTER_API_BASE,
     "model": "openai/gpt-4o-mini",
     "temperature": 0,
 }
