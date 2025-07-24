@@ -1,7 +1,7 @@
 # Silentnight Scraper
 
 A multi-level web scraper for extracting product names and images from Silentnight (and similar) e-commerce sites. Uses LLM-powered extraction via OpenRouter and ScrapegraphAI.
-
+<img src="1.jpg" />
 ## Features
 - Scrapes product names and images from category and product pages
 - Downloads images above a minimum size
